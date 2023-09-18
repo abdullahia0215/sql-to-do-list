@@ -9,8 +9,6 @@ function addClickHandlers() {
   $('#addBtn').on('click', handleSubmit);
   $('table').on('click', '.completeBtn', markTask);
   $('table').on('click', '.deleteBtn', deleteTask);
-
-  // TODO - Add code for edit & delete buttons
 }
 
 function handleSubmit() {
@@ -62,7 +60,7 @@ function renderTasks(tasks) {
       <tr>
         <td>${task["Task"]}</td>
         <td>${taskStatus}</td>
-        <td><button class="completeBtn" data-task-id="${task.id}">Mark As Finished</button></td>
+        <td><button class="completeBtn" data-task-id="${task.id}">Complete</button></td>
         <td><button class="deleteBtn" data-task-id="${task.id}">Delete</button></td>
       </tr>
     `;

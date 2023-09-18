@@ -3,7 +3,7 @@ const router = express.Router();
 
 const pool = require('../modules/pool');
 
-// Get all tasks
+
 router.get('/', (req, res) => {
   let queryText = 'SELECT * FROM "tasklist" ORDER BY "id";';
   pool.query(queryText)
@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
     });
 });
 
-// Add a new task
+
 router.post('/', (req, res) => {
   let newTask = req.body;
   console.log('Adding task', newTask);
@@ -33,7 +33,7 @@ router.post('/', (req, res) => {
     });
 });
 
-// Update a task to mark it as done
+
 router.put('/:id/done', (req, res) => {
   let reqid = req.params.id;
   let sqlText = `UPDATE "tasklist" SET "Status" = true WHERE "id" = $1;`;
@@ -48,7 +48,7 @@ router.put('/:id/done', (req, res) => {
     });
 });
 
-// Delete a task
+
 router.delete('/:id', (req, res) => {
   let reqid = req.params.id;
   let sqlText = `DELETE FROM "tasklist" WHERE "id" = $1;`;
