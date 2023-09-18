@@ -6,20 +6,20 @@ $(document).ready(function(){
 
 // Add click handlers for the submit, read, and delete buttons
 function addClickHandlers() {
-  $('#submitBtn').on('click', handleSubmit);
-  $('table').on('click', '#completeBtn', markTask);
-  $('table').on('click', '#deleteBtn', deleteTask);
+  $('#addBtn').on('click', handleSubmit);
+  $('table').on('click', '.completeBtn', markTask);
+  $('table').on('click', '.deleteBtn', deleteTask);
 
   // TODO - Add code for edit & delete buttons
 }
 
 function handleSubmit() {
-  console.log('Submit button clicked.');
+  console.log('In handlesubmit');
   let task = {};
-  task.name = $('#name').val();
-  task.status = $('#status').val();
+  task.task = $('.htmlInput').val();
   addTask(task);
 }
+
 
 // Add a task to the database
 function addTask(taskToAdd) {
@@ -54,19 +54,25 @@ function refreshTasks() {
 function renderTasks(tasks) {
   $('#tasklist-tbody').empty();
 
-  for(let i = 0; i < tasks.length; i += 1) {
+  for (let i = 0; i < tasks.length; i++) {
     let task = tasks[i];
     let taskStatus = task["Status"] ? 'Complete' : 'Incomplete';
-    // For each task, append a new row to our table
-    $('#tasklist-tbody').append(` 
+
+    let row = `
       <tr>
         <td>${task["Task"]}</td>
         <td>${taskStatus}</td>
-        <td><button id="completeBtn" data-task-id="${task.id}">Mark As Finished</button></td>
-        <td><button id="deleteBtn" data-task-id="${task.id}">Delete</button></td>
+        <td><button class="completeBtn" data-task-id="${task.id}">Mark As Finished</button></td>
+        <td><button class="deleteBtn" data-task-id="${task.id}">Delete</button></td>
       </tr>
-    `);
-    
+    `;
+
+    if (task["Status"]) {
+      row = $(row).addClass('completed-task');
+      $(row).find('.completeBtn').attr('disabled', true);
+    }
+
+    $('#tasklist-tbody').append(row);
   }
 }
 
@@ -90,10 +96,15 @@ function deleteTask(event) {
 function markTask(event) {
   console.log('Marking task read');
   const idTasks = $(event.currentTarget).data("task-id");
+  const taskRow = $(event.currentTarget).closest('tr');
   $.ajax({
     method: 'PUT',
-    url: `/Tasks/${idTasks}/done`
+    url: `/Tasks/${idTasks}/done`,
+    data: {
+      status: true
+    }
   }).then((response) => {
+    taskRow.addClass('completed-task');
     refreshTasks();
   }).catch((error) => {
     alert('Error in markTask PUT', error);

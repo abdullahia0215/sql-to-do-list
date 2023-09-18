@@ -7,7 +7,7 @@ CREATE TABLE TaskList(
 SELECT * FROM TaskList;
 
 INSERT INTO TaskList 
-	("Task", "Done?") 
+	("Task", "Status") 
 VALUES
 	('Edit weekend code', 'false'),
 	('Lift weights', 'false'),	
