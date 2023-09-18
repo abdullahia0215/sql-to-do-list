@@ -3,24 +3,23 @@ const router = express.Router();
 
 const pool = require('../modules/pool');
 
-// Get all books
+// Get all tasks
 router.get('/', (req, res) => {
   let queryText = 'SELECT * FROM "tasklist" ORDER BY "id";';
-  pool.query(queryText).then(result => {
-    // Sends back the results in an object
-    res.send(result.rows);
-  })
-  .catch(error => {
-    console.log('error getting tasks', error);
-    res.sendStatus(500);
-  });
+  pool.query(queryText)
+    .then(result => {
+      res.send(result.rows);
+    })
+    .catch(error => {
+      console.log('Error getting tasks', error);
+      res.sendStatus(500);
+    });
 });
 
-// Adds a new book to the list of awesome reads
-// Request body must be a book object with a title and author.
-router.post('/',  (req, res) => {
+// Add a new task
+router.post('/', (req, res) => {
   let newTask = req.body;
-  console.log(`Adding task`, newTask);
+  console.log('Adding task', newTask);
 
   let queryText = `INSERT INTO "tasklist" ("Task", "Status")
                    VALUES ($1, $2);`;
@@ -29,46 +28,39 @@ router.post('/',  (req, res) => {
       res.sendStatus(201);
     })
     .catch(error => {
-      console.log(`Error adding new task`, error);
+      console.log('Error adding new task', error);
       res.sendStatus(500);
     });
 });
 
-// TODO - PUT
-// Updates a book to show that it has been read
-// Request must include a parameter indicating what book to update - the id
-// Request body must include the content to update - the status
-
+// Update a task to mark it as done
 router.put('/:id/done', (req, res) => {
   let reqid = req.params.id;
-  let sqlText = `UPDATE "Task" SET "Status" = true WHERE "id" = $1;`;
+  let sqlText = `UPDATE "tasklist" SET "Status" = true WHERE "id" = $1;`;
   pool.query(sqlText, [reqid])
     .then(result => {
       console.log('Task updated to done');
       res.sendStatus(201);
-    }).catch(error => {
-      console.log('error updating task', error);
+    })
+    .catch(error => {
+      console.log('Error updating task', error);
       res.sendStatus(500);
     });
 });
 
-
-// TODO - DELETE 
-// Removes a book to show that it has been read
-// Request must include a parameter indicating what book to update - the id
-
+// Delete a task
 router.delete('/:id', (req, res) => {
   let reqid = req.params.id;
   let sqlText = `DELETE FROM "tasklist" WHERE "id" = $1;`;
   pool.query(sqlText, [reqid])
     .then(result => {
-      console.log('task is now deleted')
+      console.log('Task is now deleted');
       res.sendStatus(201);
-    }).catch(error => {
-      console.log ('error deleting task', error);
-      res.sendStatus(500);
     })
-})
-
+    .catch(error => {
+      console.log('Error deleting task', error);
+      res.sendStatus(500);
+    });
+});
 
 module.exports = router;
