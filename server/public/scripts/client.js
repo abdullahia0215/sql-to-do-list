@@ -7,8 +7,8 @@ $(document).ready(function(){
 // Add click handlers for the submit, read, and delete buttons
 function addClickHandlers() {
   $('#submitBtn').on('click', handleSubmit);
-  $('tbody').on('click', '#completeBtn', markTask);
-  $('tbody').on('click', '#deleteBtn', deleteTask);
+  $('table').on('click', '#completeBtn', markTask);
+  $('table').on('click', '#deleteBtn', deleteTask);
 
   // TODO - Add code for edit & delete buttons
 }
@@ -56,14 +56,14 @@ function renderTasks(tasks) {
 
   for(let i = 0; i < tasks.length; i += 1) {
     let task = tasks[i];
-    let taskStatus = task["Done?"] ? 'Complete' : 'Incomplete';
+    let taskStatus = task["Status"] ? 'Complete' : 'Incomplete';
     // For each task, append a new row to our table
     $('#tasklist-tbody').append(` 
       <tr>
         <td>${task["Task"]}</td>
         <td>${taskStatus}</td>
-        <td><button class="completeBtn" data-task-id="${task.id}">Mark As Finished</button></td>
-        <td><button class="deleteBtn" data-task-id="${task.id}">Delete</button></td>
+        <td><button id="completeBtn" data-task-id="${task.id}">Mark As Finished</button></td>
+        <td><button id="deleteBtn" data-task-id="${task.id}">Delete</button></td>
       </tr>
     `);
     
@@ -72,13 +72,15 @@ function renderTasks(tasks) {
 
 // Deletes a task by logging to the console and making a DELETE request to the server, if something went wrong, alert the user
 function deleteTask(event) {
+  console.log('Deleting task function');
   const idTasks = $(event.currentTarget).data("task-id");
   console.log('Deleted task');
   $.ajax({
     method: 'DELETE',
     url: `/Tasks/${idTasks}`
-  }).then((response) => {
-    refreshTasks();
+  }).then(function(response) {
+    $(event.currentTarget).closest('tr').remove(); // Remove the task from the webpage
+    refreshTasks(); // Refresh the task list to update the webpage
   }).catch((error) => {
     alert('Error in deleteTask DELETE', error);
   })
