@@ -1,8 +1,8 @@
 CREATE TABLE TaskList(
     "id" SERIAL PRIMARY KEY,
     "Task" VARCHAR (200) NOT NULL,
-    "Status" BOOLEAN DEFAULT FALSE
-);
+    "Status" BOOLEAN DEFAULT FALSE 
+    );
 
 SELECT * FROM TaskList;
 
